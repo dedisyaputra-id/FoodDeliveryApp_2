@@ -26,5 +26,22 @@ Saat ini project masih berfokus pada **CRUD Product** menggunakan **.NET Core We
 
 1. Clone repository ini:
    ```bash
-   git clone https://github.com/username/FoodDeliveryApp.git
+   git clone https://github.com/dedisyaputra-id/FoodDeliveryApp_2.git
    cd FoodDeliveryApp
+2. Atur koneksi database di appsettings.json:
+   ```bash
+   "ConnectionStrings": {
+     "DefaultConnection": "Server=nama-server;Database=FoodDelivery;Trusted_Connection=True;Encrypt=False"
+   }
+3. Jalankan migrasi untuk membuat database:
+   ```bash
+   - Buka Packgae Manager Console di Visual Studio
+   - Ketik Add-Migration namamigration
+   - Setelah success ketik update-database
+4. Buka swagger ui sesuai dengan portnya, contoh https://localhost:5001/swagger
+
+---
+
+📌 Contoh Request API
+Get semua produk
+GET /api/products
