@@ -44,12 +44,12 @@ Saat ini project masih berfokus pada **CRUD Product** menggunakan **.NET Core We
 
 📌 Contoh Request API
 ```bash
-- Get semua produk
-- GET /api/products
+   - Get semua produk
+   - GET /api/products
 
 ---
 
-🗺️ Roadmap
+## 🗺️ **Roadmap**
 ---
  Authentication & Authorization (JWT)
  CRUD Orders
