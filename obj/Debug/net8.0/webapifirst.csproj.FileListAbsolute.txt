@@ -169,3 +169,4 @@ C:\Users\dedis\source\repos\webapifirst\webapifirst\bin\Debug\net8.0\runtimes\wi
 C:\Users\dedis\source\repos\webapifirst\webapifirst\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 C:\Users\dedis\source\repos\webapifirst\webapifirst\bin\Debug\net8.0\runtimes\browser\lib\net8.0\System.Text.Encodings.Web.dll
 C:\Users\dedis\source\repos\webapifirst\webapifirst\bin\Debug\net8.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+C:\Users\dedis\source\repos\webapifirst\webapifirst\obj\Debug\net8.0\webapifirst.sourcelink.json

@@ -6,7 +6,14 @@ namespace webapifirst.Models
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=localhost\\SQLEXPRESS;Database=FoodDelivery;Trusted_Connection=True;Encrypt=False");
+            var configured = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+            var connectionStringSection = configured.GetSection("ConnectionStrings");
+            var defaultConnectionString = connectionStringSection["DefaultConnection"];
+
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer(defaultConnectionString);
+            }
         }
 
         public DbSet<Product> Products { get; set; }
