@@ -46,3 +46,18 @@ Saat ini project masih berfokus pada **CRUD Product** menggunakan **.NET Core We
 ```bash
 - Get semua produk
 - GET /api/products
+---
+🗺️ Roadmap
+---
+ Authentication & Authorization (JWT)
+ CRUD Orders
+ Integrasi Payment Gateway
+ Role untuk admin & user
+ Deploy ke cloud (Azure / AWS / Railway)
+
+---
+
+🤝 Kontribusi
+---
+Pull request dan masukan sangat diterima.
+Untuk perubahan besar, silakan buka issue terlebih dahulu.
