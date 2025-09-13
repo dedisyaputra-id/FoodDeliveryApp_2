@@ -17,5 +17,8 @@ namespace webapifirst.Models
         }
 
         public DbSet<Product> Products { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderDetail> OrderDetails { get; set; }
+        public DbSet<Category> Categories { get; set; }
     }
 }

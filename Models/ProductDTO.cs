@@ -14,13 +14,7 @@ namespace webapifirst.Models
         public float ProductPrice { get; set; }
         [Required]
         public int ProductCount { get; set; } = 0;
-
-        public string? opAdd { get; set; }
-        public string? pcAdd { get; set; }
-        public DateTime? dateAdd { get; set; }
-        public string? opEdit { get; set; }
-        public string? pcEdit { get; set; }
-        public DateTime? dateEdit { get; set; }
-        public byte? dlt { get; set; }
+        [Required]
+        public string CategoryId { get; set; } = string.Empty;
     }
 }

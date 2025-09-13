@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using webapifirst.Models;
 
@@ -15,7 +16,18 @@ namespace webapifirst.Controllers
             {
                 using (var db = new FoodDeliveryContext())
                 {
-                   var products = db.Products.ToList().Where(p => p.dlt == 0);
+                   var products = db.Products
+                                  .Include(c => c.Category)
+                                  .Where(d => d.dlt == 0 && d.Category.dlt == 0)
+                                  .Select(p => new
+                                  {
+                                     p.ProductName,
+                                     p.ProductId,
+                                     p.ProductDescription,
+                                     p.ProductPrice,
+                                     p.ProductCount,
+                                     p.Category.Name,
+                                  }).ToList();
                    return Ok(products);
                 }
             }
@@ -32,7 +44,19 @@ namespace webapifirst.Controllers
             {
                 using(var db = new FoodDeliveryContext())
                 {
-                    var product = db.Products.Find(id);
+                    var product = db.Products
+                                    .Include(c => c.Category)
+                                    .Where(c => c.ProductId == id && c.dlt == 0 && c.Category.dlt == 0)
+                                    .Select(p => new
+                                    {
+                                        p.ProductId,
+                                        p.CategoryId,
+                                        p.ProductName,
+                                        p.ProductDescription,
+                                        p.ProductCount,
+                                        p.ProductPrice,
+                                        p.Category.Name
+                                    }).ToList();
                     if (product != null)
                     {
                         return Ok(product);
@@ -86,6 +110,7 @@ namespace webapifirst.Controllers
                         oObject.ProductDescription = model.ProductDescription;
                         oObject.ProductPrice = Convert.ToInt32(model.ProductPrice);
                         oObject.ProductCount = Convert.ToInt32(model.ProductCount);
+                        oObject.CategoryId = Convert.ToString(model.CategoryId);
                     }
                     db.SaveChanges();
                     return Ok(new {success = true, message = "Successfully save data" , data = oObject});

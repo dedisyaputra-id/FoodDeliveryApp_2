@@ -18,6 +18,10 @@ namespace webapifirst.Models
         public float ProductPrice { get; set; }
         [Required]
         public int ProductCount { get; set; } = 0;
+        [Required]
+        public string CategoryId { get; set; } = string.Empty;
+        [Required]
+        public Category Category { get; set; }
 
         public string? opAdd { get; set; }
         public string? pcAdd { get; set; }
