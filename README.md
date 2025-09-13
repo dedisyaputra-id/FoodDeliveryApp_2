@@ -42,7 +42,7 @@ Saat ini project masih berfokus pada **CRUD Product** menggunakan **.NET Core We
 
 ---
 
-##📌 Contoh Request API
+## 📌 Contoh Request API
    - Get semua produk
    - GET /api/products
 
@@ -52,7 +52,6 @@ Saat ini project masih berfokus pada **CRUD Product** menggunakan **.NET Core We
 - [x] Integrasi Payment Gateway
 - [x] Role untuk admin & user
 - [x] Deploy ke cloud (Azure / AWS / Railway)
-- [x] Hapus produk 
 
 🤝 Kontribusi
 ---
