@@ -46,7 +46,9 @@ Saat ini project masih berfokus pada **CRUD Product** menggunakan **.NET Core We
 ```bash
 - Get semua produk
 - GET /api/products
+
 ---
+
 🗺️ Roadmap
 ---
  Authentication & Authorization (JWT)
