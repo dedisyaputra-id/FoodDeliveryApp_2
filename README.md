@@ -43,5 +43,6 @@ Saat ini project masih berfokus pada **CRUD Product** menggunakan **.NET Core We
 ---
 
 📌 Contoh Request API
-Get semua produk
-GET /api/products
+```bash
+- Get semua produk
+- GET /api/products
