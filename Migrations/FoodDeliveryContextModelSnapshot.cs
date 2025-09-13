@@ -123,10 +123,13 @@ namespace webapifirst.Migrations
 
                     b.Property<string>("ProductId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<float>("SubTotal")
+                        .HasColumnType("real");
 
                     b.Property<byte>("dlt")
                         .HasColumnType("tinyint");
@@ -134,6 +137,8 @@ namespace webapifirst.Migrations
                     b.HasKey("OrderDetailId");
 
                     b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
 
                     b.ToTable("OrderDetails");
                 });
@@ -192,12 +197,20 @@ namespace webapifirst.Migrations
             modelBuilder.Entity("webapifirst.Models.OrderDetail", b =>
                 {
                     b.HasOne("webapifirst.Models.Order", "order")
-                        .WithMany("orderDetails")
+                        .WithMany("OrderDetails")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("webapifirst.Models.Product", "product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("order");
+
+                    b.Navigation("product");
                 });
 
             modelBuilder.Entity("webapifirst.Models.Product", b =>
@@ -218,7 +231,7 @@ namespace webapifirst.Migrations
 
             modelBuilder.Entity("webapifirst.Models.Order", b =>
                 {
-                    b.Navigation("orderDetails");
+                    b.Navigation("OrderDetails");
                 });
 #pragma warning restore 612, 618
         }

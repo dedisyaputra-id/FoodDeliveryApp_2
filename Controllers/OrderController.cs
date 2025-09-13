@@ -34,6 +34,7 @@ namespace webapifirst.Controllers
                                            d.product.ProductPrice,
                                            d.product.ProductId,
                                            d.Quantity,
+                                           d.SubTotal
                                        })
                                    }).ToList();
                     if (orders.Any())
@@ -75,8 +76,9 @@ namespace webapifirst.Controllers
                                           d.product.ProductPrice,
                                           d.product.ProductId,
                                           d.Quantity,
+                                          d.SubTotal
                                       })
-                                  });
+                                  }).ToList();
                     if (order.Any())
                     {
                         return Ok(order);
@@ -125,28 +127,102 @@ namespace webapifirst.Controllers
                         }
                     }
                     if(oObject != null)
-                    {
+                    { 
+                        var productIds = db.Products
+                                           .Select(p => p.ProductId).ToList();
+                        var products = db.Products.Where(p => productIds.Contains(p.ProductId)).ToDictionary(p => p.ProductId, p => p);
+
+                        var orderDetails = model.OrderDetails
+                                                .Select(d =>
+                                                {
+                                                    var product = products[d.ProductId];
+                                                    var subTotal = d.Quantity * product.ProductPrice;
+
+                                                    return new OrderDetail
+                                                    {
+                                                        OrderDetailId = Convert.ToString(Guid.NewGuid()),
+                                                        OrderId = oObject.OrderId,
+                                                        ProductId = d.ProductId,
+                                                        Quantity = d.Quantity,
+                                                        SubTotal = subTotal,
+                                                        OpAdd = "admin",
+                                                        PcAdd = Environment.MachineName,
+                                                        DateAdd = DateTime.Now,
+                                                    };
+                                                }).ToList();
                         oObject.OrderDate = DateTime.Now;
-                        oObject.TotalAmount = model.TotalAmount;
-                        oObject.OrderDetails = model.OrderDetails.Select(d => new OrderDetail
-                        {
-                            OrderDetailId = Convert.ToString(Guid.NewGuid()),
-                            OrderId = oObject.OrderId,
-                            ProductId = d.ProductId,
-                            Quantity = d.Quantity,
-                            OpAdd = "admin",
-                            PcAdd = Environment.MachineName,
-                            DateAdd = DateTime.Now,
-                        }).ToList();
+                        oObject.TotalAmount = orderDetails.Sum(t => t.SubTotal);
+                        oObject.OrderDetails = orderDetails;
                     }
 
                     db.SaveChanges();
-                    return Ok(oObject);
+                    var data = db.Orders
+                                 .Include(o => o.OrderDetails)
+                                 .Where(o => o.OrderId == oObject.OrderId && o.dlt == 0)
+                                 .Select(p => new
+                                 {
+                                     p.OrderId,
+                                     p.OrderDate,
+                                     p.TotalAmount,
+                                     Details = p.OrderDetails.Select(d => new
+                                     {
+                                         d.OrderDetailId,
+                                         d.OrderId,
+                                         d.ProductId,
+                                         d.Quantity,
+                                         d.product.ProductName
+                                     })
+                                 }).ToList();
+                    return Ok(data);
                 }
             }
             catch (Exception ex)
             {
                 return BadRequest();
+            }
+        }
+
+        [HttpDelete]
+        public IActionResult Delete([FromBody] string orderId)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(orderId))
+                {
+                    return NotFound();
+                }
+                using (var db = new FoodDeliveryContext())
+                {
+                    var order = db.Orders.Find(orderId);
+                    if(order != null)
+                    {
+                        order.dlt = 1;
+                        order.OpEdit = "admin";
+                        order.PcEdit = Environment.MachineName;
+                        //order.DateEdit = DateTime.Now;
+
+                        var orderDetails = db.OrderDetails.Where(p => p.OrderId == order.OrderId).ToList();
+                        if(orderDetails != null)
+                        {
+                            foreach(var d in orderDetails)
+                            {
+                                d.dlt = 1;
+                                d.OpEdit = "admin";
+                                d.PcEdit = Environment.MachineName;
+                            }
+                        }
+                        db.SaveChanges();
+                        return Ok(new {success = true, message = "successfully delete data"});
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+            }
+            catch (Exception ex)
+            { 
+                return BadRequest(ex.Message);
             }
         }
     }

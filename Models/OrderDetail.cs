@@ -14,6 +14,8 @@ namespace webapifirst.Models
         public string ProductId { get; set; }
         [Required]
         public int Quantity { get; set; }
+        [Required]
+        public float SubTotal { get; set; }
         public Order order { get; set; }
         public Product product { get; set; }
         public string? OpAdd { get; set; }

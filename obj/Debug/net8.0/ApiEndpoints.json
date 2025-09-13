@@ -64,6 +64,22 @@
   },
   {
     "ContainingType": "webapifirst.Controllers.OrderController",
+    "Method": "Delete",
+    "RelativePath": "api/Order/Delete",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "orderId",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "webapifirst.Controllers.OrderController",
     "Method": "Get",
     "RelativePath": "api/Order/Get",
     "HttpMethod": "GET",
