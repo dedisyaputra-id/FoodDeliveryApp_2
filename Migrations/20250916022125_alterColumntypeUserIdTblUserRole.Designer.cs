@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using webapifirst.Models;
 
@@ -11,9 +12,11 @@ using webapifirst.Models;
 namespace webapifirst.Migrations
 {
     [DbContext(typeof(FoodDeliveryContext))]
-    partial class FoodDeliveryContextModelSnapshot : ModelSnapshot
+    [Migration("20250916022125_alterColumntypeUserIdTblUserRole")]
+    partial class alterColumntypeUserIdTblUserRole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -192,30 +195,6 @@ namespace webapifirst.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("webapifirst.Models.RefreshToken", b =>
-                {
-                    b.Property<string>("RefreshTokenId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<byte>("IsRevoke")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("RefreshTokenSecret")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("userId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("RefreshTokenId");
-
-                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("webapifirst.Models.Role", b =>

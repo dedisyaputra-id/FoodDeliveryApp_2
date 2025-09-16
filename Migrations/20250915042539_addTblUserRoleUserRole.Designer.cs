@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using webapifirst.Models;
 
@@ -11,9 +12,11 @@ using webapifirst.Models;
 namespace webapifirst.Migrations
 {
     [DbContext(typeof(FoodDeliveryContext))]
-    partial class FoodDeliveryContextModelSnapshot : ModelSnapshot
+    [Migration("20250915042539_addTblUserRoleUserRole")]
+    partial class addTblUserRoleUserRole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -194,30 +197,6 @@ namespace webapifirst.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("webapifirst.Models.RefreshToken", b =>
-                {
-                    b.Property<string>("RefreshTokenId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<byte>("IsRevoke")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("RefreshTokenSecret")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("userId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("RefreshTokenId");
-
-                    b.ToTable("RefreshTokens");
-                });
-
             modelBuilder.Entity("webapifirst.Models.Role", b =>
                 {
                     b.Property<int>("Id")
@@ -234,27 +213,6 @@ namespace webapifirst.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime?>("dateAdd")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("dateEdit")
-                        .HasColumnType("datetime2");
-
-                    b.Property<byte>("dlt")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("opAdd")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("opEdit")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("pcAdd")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("pcEdit")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
@@ -264,15 +222,13 @@ namespace webapifirst.Migrations
                         {
                             Id = 1,
                             Description = "Role for admin",
-                            Name = "Admin",
-                            dlt = (byte)0
+                            Name = "Admin"
                         },
                         new
                         {
                             Id = 2,
                             Description = "Role for user",
-                            Name = "User",
-                            dlt = (byte)0
+                            Name = "User"
                         });
                 });
 
@@ -299,27 +255,6 @@ namespace webapifirst.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<DateTime?>("dateAdd")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("dateEdit")
-                        .HasColumnType("datetime2");
-
-                    b.Property<byte>("dlt")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("opAdd")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("opEdit")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("pcAdd")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("pcEdit")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("UserId");
 
                     b.HasIndex(new[] { "Email" }, "IX_unique_Email")
@@ -336,36 +271,17 @@ namespace webapifirst.Migrations
                     b.Property<int>("RoleId")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId1")
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("dateAdd")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("dateEdit")
-                        .HasColumnType("datetime2");
-
-                    b.Property<byte>("dlt")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("opAdd")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("opEdit")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("pcAdd")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("pcEdit")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserRoleId");
 
                     b.HasIndex("RoleId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("UserId1");
 
                     b.ToTable("UserRoles");
                 });
@@ -410,9 +326,7 @@ namespace webapifirst.Migrations
 
                     b.HasOne("webapifirst.Models.User", "User")
                         .WithMany("UserRoles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId1");
 
                     b.Navigation("Role");
 

@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using webapifirst.Models;
 
 namespace webapifirst.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]/[action]")]
     public class ProductController : ControllerBase

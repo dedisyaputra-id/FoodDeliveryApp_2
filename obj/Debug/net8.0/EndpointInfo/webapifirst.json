@@ -5,6 +5,121 @@
     "version": "1.0"
   },
   "paths": {
+    "/api/Auth/Register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "Email",
+                  "FirstName",
+                  "Password"
+                ],
+                "type": "object",
+                "properties": {
+                  "Email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "FirstName": {
+                    "maxLength": 255,
+                    "minLength": 3,
+                    "type": "string"
+                  },
+                  "LastName": {
+                    "maxLength": 255,
+                    "type": "string"
+                  },
+                  "Password": {
+                    "maxLength": 255,
+                    "minLength": 8,
+                    "type": "string"
+                  }
+                }
+              },
+              "encoding": {
+                "Email": {
+                  "style": "form"
+                },
+                "FirstName": {
+                  "style": "form"
+                },
+                "LastName": {
+                  "style": "form"
+                },
+                "Password": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Auth/Login": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "Email",
+                  "Password"
+                ],
+                "type": "object",
+                "properties": {
+                  "Email": {
+                    "type": "string",
+                    "format": "email"
+                  },
+                  "Password": {
+                    "minLength": 8,
+                    "type": "string"
+                  }
+                }
+              },
+              "encoding": {
+                "Email": {
+                  "style": "form"
+                },
+                "Password": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Auth/RefreshToken": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Category/Get": {
       "get": {
         "tags": [
