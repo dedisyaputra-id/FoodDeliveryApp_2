@@ -6,7 +6,6 @@ using webapifirst.Models;
 
 namespace webapifirst.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]/[action]")]
     public class ProductController : ControllerBase
@@ -19,7 +18,6 @@ namespace webapifirst.Controllers
                 using (var db = new FoodDeliveryContext())
                 {
                    var products = db.Products
-                                  .Include(c => c.Category)
                                   .Where(d => d.dlt == 0 && d.Category.dlt == 0)
                                   .Select(p => new
                                   {
@@ -76,6 +74,7 @@ namespace webapifirst.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Save([FromForm] ProductDTO model)
         {
             try
@@ -115,7 +114,19 @@ namespace webapifirst.Controllers
                         oObject.CategoryId = Convert.ToString(model.CategoryId);
                     }
                     db.SaveChanges();
-                    return Ok(new {success = true, message = "Successfully save data" , data = oObject});
+                    var product = db.Products
+                                  .Include(c => c.Category)
+                                  .Where(d => d.dlt == 0 && d.Category.dlt == 0 && d.ProductId == oObject.ProductId)
+                                  .Select(p => new
+                                  {
+                                      p.ProductName,
+                                      p.ProductId,
+                                      p.ProductDescription,
+                                      p.ProductPrice,
+                                      p.ProductCount,
+                                      p.Category.Name,
+                                  }).ToList();
+                    return Ok(new {success = true, message = "Successfully save data" , data = product});
                 }
             }
             catch (Exception ex) 
@@ -125,6 +136,7 @@ namespace webapifirst.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete([FromBody] string ProductId)
         {
             try

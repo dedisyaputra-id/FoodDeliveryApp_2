@@ -44,7 +44,7 @@ namespace webapifirst.Controllers
                         dateAdd = DateTime.Now
                     };
                     db.Users.Add(oObject);
-                    var role = db.Roles.FirstOrDefault(r => r.Name == "User" && r.dlt == 0);
+                    var role = db.Roles.FirstOrDefault(r => r.Name.ToLower() == model.Role.ToLower() && r.dlt == 0);
                     if (role != null) {
                         var oObjectUserRole = new UserRole()
                         {

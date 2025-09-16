@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using webapifirst.Models;
 namespace webapifirst.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]/[action]")]
     public class OrderController : ControllerBase
     {

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using webapifirst.Models;
 
 namespace webapifirst.Controllers
@@ -27,6 +28,7 @@ namespace webapifirst.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public IActionResult GetById([FromRoute] string id)
         {
             try
@@ -51,6 +53,7 @@ namespace webapifirst.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Save([FromForm] CategoryDTO model)
         {
             try
@@ -96,6 +99,7 @@ namespace webapifirst.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete([FromBody] string categoryId)
         {
             try

@@ -15,7 +15,7 @@ namespace webapifirst.Models
         [Required]
         [MaxLength(255), MinLength(8)]
         public string Password { get; set; }
-        //[Required]
-        //public string Role { get; set; } = "User";
+        [Required]
+        public string Role { get; set; } = "User";
     }
 }
