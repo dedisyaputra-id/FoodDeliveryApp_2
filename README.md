@@ -1,7 +1,7 @@
 # 🍔 FoodDeliveryApp
 
 FoodDeliveryApp adalah aplikasi backend sederhana untuk layanan pemesanan makanan.  
-Saat ini project masih berfokus pada **CRUD Product** menggunakan **.NET Core Web API**, **Entity Framework Core**, dan **SQL Server**.
+Techstack yang digunakan adalah **.NET Core Web API**, **Entity Framework Core**, dan **SQL Server**.
 
 ---
 
@@ -14,11 +14,20 @@ Saat ini project masih berfokus pada **CRUD Product** menggunakan **.NET Core We
 ---
 
 ## 📦 Fitur Saat Ini
-- [x] Tambah produk baru  
+- [x] Tambah produk baru dengan kategori
 - [x] Lihat daftar produk  
 - [x] Lihat detail produk berdasarkan ID  
 - [x] Update produk  
-- [x] Hapus produk  
+- [x] Hapus produk
+- [x] Tambah kategori baru
+- [x] Lihat daftar kategori
+- [x] Lihat daftar kategori berdasarkan ID
+- [x] Update kategori
+- [x] Hapus kategori
+- [x] Tambah order baru beserta order detailnya
+- [x] Lihat daftar order
+- [x] Lihat daftar order berdasarkan ID
+- [x] Hapus Order  
 
 ---
 
