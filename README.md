@@ -10,6 +10,8 @@ Techstack yang digunakan adalah **.NET Core Web API**, **Entity Framework Core**
 - **Entity Framework Core**
 - **SQL Server**
 - **Swagger (API Documentation)**
+- **JWT Authentication & Refresh Token**
+- **Role-based Authorization (Admin & User)**
 
 ---
 
