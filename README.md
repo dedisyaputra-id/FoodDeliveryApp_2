@@ -20,17 +20,39 @@ Role-based Authorization (Admin & User)
 
 📦 Fitur Saat Ini
 
-Produk & Kategori: CRUD lengkap
+ Tambah produk baru dengan kategori
 
-Order: tambah, lihat, hapus, dan detail order
+ Lihat daftar produk
 
-Autentikasi & Otorisasi:
+ Lihat detail produk berdasarkan ID
 
-Register & Login
+ Update produk
 
-JWT Access Token & Refresh Token
+ Hapus produk
 
-Role-based access (Admin & User)
+ Tambah kategori baru
+
+ Lihat daftar kategori
+
+ Lihat detail kategori berdasarkan ID
+
+ Update kategori
+
+ Hapus kategori
+
+ Tambah order baru beserta order detailnya
+
+ Lihat daftar order
+
+ Lihat detail order berdasarkan ID
+
+ Hapus order
+
+ Register & Login menggunakan JWT
+
+ Role-based Authorization (Admin & User)
+
+ Refresh Token untuk menjaga session tetap aktif
 
 🔑 Autentikasi & Otorisasi
 Endpoints
