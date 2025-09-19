@@ -10,6 +10,8 @@ Techstack yang digunakan adalah **.NET Core Web API**, **Entity Framework Core**
 - **Entity Framework Core**
 - **SQL Server**
 - **Swagger (API Documentation)**
+- **JWT Authentication & Refresh Token**
+- **Role-based Authorization (Admin & User)**
 
 ---
 
@@ -27,10 +29,36 @@ Techstack yang digunakan adalah **.NET Core Web API**, **Entity Framework Core**
 - [x] Tambah order baru beserta order detailnya
 - [x] Lihat daftar order
 - [x] Lihat daftar order berdasarkan ID
-- [x] Hapus Order  
+- [x] Hapus Order
+- [x] Register & Login menggunakan JWT
+- [x] Role-based Authorization (Admin & User)
+- [x] Refresh Token untuk menjaga session tetap aktif
 
 ---
-
+## Contoh Response JWT Login
+```bash
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refreshToken": "c29tZS1yYW5kb20tc3RyaW5nLXJlZnJlc2g=",
+  "expiresIn": 3600,
+  "role": "Admin"
+}
+```
+---
+## 🖇️ Flow Diagram Login & Refresh Token
+``` bash
+flowchart TD
+    A[User Login] -->|POST /login| B[Server Verifies Credentials]
+    B --> C{Valid?}
+    C -->|Yes| D[Server Returns JWT Access Token & Refresh Token]
+    C -->|No| E[Return Error]
+    F[Access Protected API] -->|Send JWT| G[Server Validates JWT]
+    G -->|Valid| H[Return Data]
+    G -->|Expired| I[Use Refresh Token]
+    I -->|POST /refresh-token| J[Server Issues New JWT]
+    J --> H
+```
+---
 ## 🛠️ Setup & Menjalankan Project
 
 1. Clone repository ini:
@@ -53,16 +81,18 @@ Techstack yang digunakan adalah **.NET Core Web API**, **Entity Framework Core**
 
 ## 📌 Contoh Request API
    - Get semua produk
-   - GET /api/products
+   - GET /api/Products
+   - POST /api/Products/Save
+   - POST /api/Auth/Login
+   - POST /api/Auth/Register
+   - POST /api/Auth/Refreshtoken
 
 ## 🗺️ Roadmap
-- Authentication & Authorization (JWT)
-- CRUD Orders
+- CRUD Orders lebih lengkap (update status & edit detail order)
 - Integrasi Payment Gateway
-- Role untuk admin & user
 - Deploy ke cloud (Azure / AWS / Railway)
 
 🤝 Kontribusi
 ---
 Pull request dan masukan sangat diterima.
-Untuk perubahan besar, silakan buka issue terlebih dahulu.
+Untuk perubahan besar, silakan buka issue terlebih dahulu. perbarui readme saya, sekarang sudah bisa login dan register menggunakan mekanisme jwt, sudah ada role untuk admin dan user 
