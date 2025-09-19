@@ -17,7 +17,8 @@
                 "required": [
                   "Email",
                   "FirstName",
-                  "Password"
+                  "Password",
+                  "Role"
                 ],
                 "type": "object",
                 "properties": {
@@ -38,6 +39,9 @@
                     "maxLength": 255,
                     "minLength": 8,
                     "type": "string"
+                  },
+                  "Role": {
+                    "type": "string"
                   }
                 }
               },
@@ -52,6 +56,9 @@
                   "style": "form"
                 },
                 "Password": {
+                  "style": "form"
+                },
+                "Role": {
                   "style": "form"
                 }
               }

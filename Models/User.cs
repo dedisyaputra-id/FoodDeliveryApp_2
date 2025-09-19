@@ -20,6 +20,7 @@ public class User
     public string Password { get; set; }
 
     public ICollection<UserRole> UserRoles { get; set; }
+    public ICollection<Order> Orders { get; set; }
     public string? opAdd { get; set; }
     public string? pcAdd { get; set; }
     public DateTime? dateAdd { get; set; }

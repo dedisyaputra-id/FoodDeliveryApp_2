@@ -57,6 +57,11 @@
         "Name": "Password",
         "Type": "System.String",
         "IsRequired": false
+      },
+      {
+        "Name": "Role",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

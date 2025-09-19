@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using webapifirst.Models;
 
@@ -11,9 +12,11 @@ using webapifirst.Models;
 namespace webapifirst.Migrations
 {
     [DbContext(typeof(FoodDeliveryContext))]
-    partial class FoodDeliveryContextModelSnapshot : ModelSnapshot
+    [Migration("20250917072739_addColumnStatusToTblOrder")]
+    partial class addColumnStatusToTblOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,19 +86,16 @@ namespace webapifirst.Migrations
                     b.Property<string>("PcEdit")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<float?>("TotalAmount")
                         .HasColumnType("real");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<byte>("dlt")
                         .HasColumnType("tinyint");
 
                     b.HasKey("OrderId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
@@ -376,17 +376,6 @@ namespace webapifirst.Migrations
                     b.ToTable("UserRoles");
                 });
 
-            modelBuilder.Entity("webapifirst.Models.Order", b =>
-                {
-                    b.HasOne("webapifirst.Models.User", "User")
-                        .WithMany("Orders")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("webapifirst.Models.OrderDetail", b =>
                 {
                     b.HasOne("webapifirst.Models.Order", "order")
@@ -453,8 +442,6 @@ namespace webapifirst.Migrations
 
             modelBuilder.Entity("webapifirst.Models.User", b =>
                 {
-                    b.Navigation("Orders");
-
                     b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618

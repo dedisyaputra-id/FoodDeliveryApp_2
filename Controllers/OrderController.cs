@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using webapifirst.Models;
 namespace webapifirst.Controllers
 {
@@ -18,10 +20,10 @@ namespace webapifirst.Controllers
             {
                 using (var db = new FoodDeliveryContext())
                 {
+                    var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
+           ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                     var orders = db.Orders
-                                   .Include(o => o.OrderDetails)
-                                   .ThenInclude(o => o.product)
-                                   .Where(o => o.dlt == 0)
+                                   .Where(o => o.dlt == 0 && o.User.UserId == userId)
                                    .Select(o => new
                                    {
                                        o.OrderId,
@@ -106,14 +108,18 @@ namespace webapifirst.Controllers
                 {
                     return BadRequest(ModelState);
                 }
+                var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
+           ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                //var email = User.FindFirst(ClaimTypes.Email)?.Value;
                 using (var db = new FoodDeliveryContext())
                 {
                     var oObject = new Order();
                     var oObjectOrderDetail = new OrderDetail();
+                    var user = db.Users.FirstOrDefault(u => u.UserId == userId);
                     if (string.IsNullOrEmpty(model.OrderId))
                     {
                         oObject.OrderId = Convert.ToString(Guid.NewGuid());
-                        oObject.OpAdd = "admin";
+                        oObject.OpAdd = user?.FirstName;
                         oObject.PcAdd = Environment.MachineName;
                         oObject.DateAdd = DateTime.Now;
 
@@ -124,7 +130,7 @@ namespace webapifirst.Controllers
                         oObject = db.Orders.Find(model.OrderId);
                         if(oObject != null)
                         {
-                            oObject.OpAdd = "admin";
+                            oObject.OpAdd = user?.FirstName;
                             oObject.PcEdit = Environment.MachineName;
                         }
                     }
@@ -155,17 +161,19 @@ namespace webapifirst.Controllers
                         oObject.OrderDate = DateTime.Now;
                         oObject.TotalAmount = orderDetails.Sum(t => t.SubTotal);
                         oObject.OrderDetails = orderDetails;
+                        oObject.UserId = user.UserId;
                     }
 
                     db.SaveChanges();
                     var data = db.Orders
-                                 .Include(o => o.OrderDetails)
                                  .Where(o => o.OrderId == oObject.OrderId && o.dlt == 0)
                                  .Select(p => new
                                  {
                                      p.OrderId,
                                      p.OrderDate,
                                      p.TotalAmount,
+                                     p.User.FirstName, 
+                                     p.User.LastName,
                                      Details = p.OrderDetails.Select(d => new
                                      {
                                          d.OrderDetailId,
