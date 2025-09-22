@@ -16,5 +16,7 @@ namespace webapifirst.Models
         public int ProductCount { get; set; } = 0;
         [Required]
         public string CategoryId { get; set; } = string.Empty;
+
+        public string CategoryName { get; set; }
     }
 }

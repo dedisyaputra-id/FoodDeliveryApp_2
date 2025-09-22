@@ -399,6 +399,9 @@
                   },
                   "CategoryId": {
                     "type": "string"
+                  },
+                  "CategoryName": {
+                    "type": "string"
                   }
                 }
               },
@@ -419,6 +422,9 @@
                   "style": "form"
                 },
                 "CategoryId": {
+                  "style": "form"
+                },
+                "CategoryName": {
                   "style": "form"
                 }
               }

@@ -8,18 +8,19 @@ namespace webapifirst.Controllers
     [Route("api/[controller]/[action]")]
     public class CategoryController : ControllerBase
     {
-        public CategoryController() { }
+        private readonly FoodDeliveryContext _db;
+        public CategoryController(FoodDeliveryContext context) 
+        { 
+            _db = context;
+        }
 
         [HttpGet]
         public IActionResult Get()
         {
             try
             {
-                using(var db = new FoodDeliveryContext())
-                {
-                    var category = db.Categories.ToList().Where(c => c.dlt == 0);
-                    return Ok(category);
-                }
+                var category = _db.Categories.ToList().Where(c => c.dlt == 0);
+                return Ok(category);
             }
             catch (Exception ex)
             {
@@ -33,17 +34,14 @@ namespace webapifirst.Controllers
         {
             try
             {
-                using( var db = new FoodDeliveryContext())
+                var category = _db.Categories.Find(id);
+                if (category != null)
                 {
-                    var category = db.Categories.Find(id);
-                    if(category != null)
-                    {
-                        return Ok(category);
-                    }
-                    else
-                    {
-                        return NotFound();
-                    }
+                    return Ok(category);
+                }
+                else
+                {
+                    return NotFound();
                 }
             }
             catch (Exception ex)
@@ -62,35 +60,32 @@ namespace webapifirst.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                using (var db = new FoodDeliveryContext())
+                var oObject = new Category();
+                if (string.IsNullOrEmpty(Convert.ToString(model.CategoryId)))
                 {
-                    var oObject = new Category();
-                    if (string.IsNullOrEmpty(Convert.ToString(model.CategoryId)))
-                    {
-                        oObject.CategoryId = Convert.ToString(Guid.NewGuid());
-                        oObject.OpAdd = "Admin";
-                        oObject.PcAdd = Environment.MachineName;
-                        oObject.DateAdd = DateTime.Now;
+                    oObject.CategoryId = Convert.ToString(Guid.NewGuid());
+                    oObject.OpAdd = "Admin";
+                    oObject.PcAdd = Environment.MachineName;
+                    oObject.DateAdd = DateTime.Now;
 
-                        db.Categories.Add(oObject);
-                    }
-                    else
-                    {
-                        oObject = db.Categories.Find(Convert.ToString(model.CategoryId));
-                        if (oObject != null)
-                        {
-                            oObject.OpEdit = "admin";
-                            oObject.PcEdit = Environment.MachineName;
-                            //oObject.DateEdit = DateTime.Now;
-                        }
-                    }
+                    _db.Categories.Add(oObject);
+                }
+                else
+                {
+                    oObject = _db.Categories.Find(Convert.ToString(model.CategoryId));
                     if (oObject != null)
                     {
-                        oObject.Name = model.Name;
+                        oObject.OpEdit = "admin";
+                        oObject.PcEdit = Environment.MachineName;
+                        //oObject.DateEdit = DateTime.Now;
                     }
-                    db.SaveChanges();
-                    return Ok(oObject);
                 }
+                if (oObject != null)
+                {
+                    oObject.Name = model.Name;
+                }
+                _db.SaveChanges();
+                return Ok(oObject);
             }
             catch (Exception ex)
             {
@@ -108,22 +103,19 @@ namespace webapifirst.Controllers
                 {
                     return NotFound();
                 }
-                using (var db = new FoodDeliveryContext())
+                var oObject = _db.Categories.Find(categoryId);
+                if (oObject != null)
                 {
-                    var oObject = db.Categories.Find(categoryId);
-                    if (oObject != null)
-                    {
-                        oObject.dlt = 1;
-                        oObject.OpEdit = "admin";
-                        oObject.PcEdit = Environment.MachineName;
-                        //oObject.DateEdit = Convert.ToString(DateTime.Now);
-                        db.SaveChanges();
-                        return Ok(oObject);
-                    }
-                    else
-                    {
-                        return NoContent();
-                    }
+                    oObject.dlt = 1;
+                    oObject.OpEdit = "admin";
+                    oObject.PcEdit = Environment.MachineName;
+                    //oObject.DateEdit = Convert.ToString(DateTime.Now);
+                    _db.SaveChanges();
+                    return Ok(oObject);
+                }
+                else
+                {
+                    return NoContent();
                 }
             }
             catch (Exception ex)

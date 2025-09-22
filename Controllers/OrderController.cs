@@ -11,44 +11,45 @@ namespace webapifirst.Controllers
     [Route("api/[controller]/[action]")]
     public class OrderController : ControllerBase
     {
-        public OrderController() { }
+        private readonly FoodDeliveryContext _db;
+        public OrderController(FoodDeliveryContext context) 
+        {
+            _db = context;
+        }
 
         [HttpGet]
         public IActionResult Get()
         {
             try
             {
-                using (var db = new FoodDeliveryContext())
-                {
-                    var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
+                var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
            ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                    var orders = db.Orders
-                                   .Where(o => o.dlt == 0 && o.User.UserId == userId)
-                                   .Select(o => new
+                var orders = _db.Orders
+                               .Where(o => o.dlt == 0 && o.User.UserId == userId)
+                               .Select(o => new
+                               {
+                                   o.OrderId,
+                                   o.OrderDate,
+                                   o.TotalAmount,
+                                   Details = o.OrderDetails.Select(d => new
                                    {
-                                       o.OrderId,
-                                       o.OrderDate,
-                                       o.TotalAmount,
-                                       Details = o.OrderDetails.Select(d => new
-                                       {
-                                           d.OrderDetailId,
-                                           d.OrderId,
-                                           d.product.ProductName,
-                                           d.product.ProductDescription,
-                                           d.product.ProductPrice,
-                                           d.product.ProductId,
-                                           d.Quantity,
-                                           d.SubTotal
-                                       })
-                                   }).ToList();
-                    if (orders.Any())
-                    {
-                        return Ok(orders);
-                    }
-                    else
-                    {
-                        return NotFound();
-                    }
+                                       d.OrderDetailId,
+                                       d.OrderId,
+                                       d.product.ProductName,
+                                       d.product.ProductDescription,
+                                       d.product.ProductPrice,
+                                       d.product.ProductId,
+                                       d.Quantity,
+                                       d.SubTotal
+                                   })
+                               }).ToList();
+                if (orders.Any())
+                {
+                    return Ok(orders);
+                }
+                else
+                {
+                    return NotFound();
                 }
             } catch (Exception ex)
             {
@@ -60,9 +61,7 @@ namespace webapifirst.Controllers
         {
             try
             {
-                using (var db = new FoodDeliveryContext())
-                {
-                    var order = db.Orders
+                var order = _db.Orders
                                   .Include(o => o.OrderDetails)
                                   .ThenInclude(o => o.product)
                                   .Where(o => o.dlt == 0 && o.OrderId == id)
@@ -83,14 +82,13 @@ namespace webapifirst.Controllers
                                           d.SubTotal
                                       })
                                   }).ToList();
-                    if (order.Any())
-                    {
-                        return Ok(order);
-                    }
-                    else
-                    {
-                        return NotFound();
-                    }
+                if (order.Any())
+                {
+                    return Ok(order);
+                }
+                else
+                {
+                    return NotFound();
                 }
             }
             catch (Exception ex)
@@ -110,81 +108,77 @@ namespace webapifirst.Controllers
                 }
                 var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value
            ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                //var email = User.FindFirst(ClaimTypes.Email)?.Value;
-                using (var db = new FoodDeliveryContext())
+                var oObject = new Order();
+                var oObjectOrderDetail = new OrderDetail();
+                var user = _db.Users.FirstOrDefault(u => u.UserId == userId);
+                if (string.IsNullOrEmpty(model.OrderId))
                 {
-                    var oObject = new Order();
-                    var oObjectOrderDetail = new OrderDetail();
-                    var user = db.Users.FirstOrDefault(u => u.UserId == userId);
-                    if (string.IsNullOrEmpty(model.OrderId))
-                    {
-                        oObject.OrderId = Convert.ToString(Guid.NewGuid());
-                        oObject.OpAdd = user?.FirstName;
-                        oObject.PcAdd = Environment.MachineName;
-                        oObject.DateAdd = DateTime.Now;
+                    oObject.OrderId = Convert.ToString(Guid.NewGuid());
+                    oObject.OpAdd = user?.FirstName;
+                    oObject.PcAdd = Environment.MachineName;
+                    oObject.DateAdd = DateTime.Now;
 
-                        db.Orders.Add(oObject);
-                    }
-                    else
-                    {
-                        oObject = db.Orders.Find(model.OrderId);
-                        if(oObject != null)
-                        {
-                            oObject.OpAdd = user?.FirstName;
-                            oObject.PcEdit = Environment.MachineName;
-                        }
-                    }
-                    if(oObject != null)
-                    { 
-                        var productIds = db.Products
-                                           .Select(p => p.ProductId).ToList();
-                        var products = db.Products.Where(p => productIds.Contains(p.ProductId)).ToDictionary(p => p.ProductId, p => p);
-
-                        var orderDetails = model.OrderDetails
-                                                .Select(d =>
-                                                {
-                                                    var product = products[d.ProductId];
-                                                    var subTotal = d.Quantity * product.ProductPrice;
-
-                                                    return new OrderDetail
-                                                    {
-                                                        OrderDetailId = Convert.ToString(Guid.NewGuid()),
-                                                        OrderId = oObject.OrderId,
-                                                        ProductId = d.ProductId,
-                                                        Quantity = d.Quantity,
-                                                        SubTotal = subTotal,
-                                                        OpAdd = "admin",
-                                                        PcAdd = Environment.MachineName,
-                                                        DateAdd = DateTime.Now,
-                                                    };
-                                                }).ToList();
-                        oObject.OrderDate = DateTime.Now;
-                        oObject.TotalAmount = orderDetails.Sum(t => t.SubTotal);
-                        oObject.OrderDetails = orderDetails;
-                        oObject.UserId = user.UserId;
-                    }
-
-                    db.SaveChanges();
-                    var data = db.Orders
-                                 .Where(o => o.OrderId == oObject.OrderId && o.dlt == 0)
-                                 .Select(p => new
-                                 {
-                                     p.OrderId,
-                                     p.OrderDate,
-                                     p.TotalAmount,
-                                     p.User.FirstName, 
-                                     p.User.LastName,
-                                     Details = p.OrderDetails.Select(d => new
-                                     {
-                                         d.OrderDetailId,
-                                         d.OrderId,
-                                         d.ProductId,
-                                         d.Quantity,
-                                         d.product.ProductName
-                                     })
-                                 }).ToList();
-                    return Ok(data);
+                    _db.Orders.Add(oObject);
                 }
+                else
+                {
+                    oObject = _db.Orders.Find(model.OrderId);
+                    if (oObject != null)
+                    {
+                        oObject.OpAdd = user?.FirstName;
+                        oObject.PcEdit = Environment.MachineName;
+                    }
+                }
+                if (oObject != null)
+                {
+                    var productIds = _db.Products
+                                       .Select(p => p.ProductId).ToList();
+                    var products =  _db.Products.Where(p => productIds.Contains(p.ProductId)).ToDictionary(p => p.ProductId, p => p);
+
+                    var orderDetails = model.OrderDetails
+                                            .Select(d =>
+                                            {
+                                                var product = products[d.ProductId];
+                                                var subTotal = d.Quantity * product.ProductPrice;
+
+                                                return new OrderDetail
+                                                {
+                                                    OrderDetailId = Convert.ToString(Guid.NewGuid()),
+                                                    OrderId = oObject.OrderId,
+                                                    ProductId = d.ProductId,
+                                                    Quantity = d.Quantity,
+                                                    SubTotal = subTotal,
+                                                    OpAdd = "admin",
+                                                    PcAdd = Environment.MachineName,
+                                                    DateAdd = DateTime.Now,
+                                                };
+                                            }).ToList();
+                    oObject.OrderDate = DateTime.Now;
+                    oObject.TotalAmount = orderDetails.Sum(t => t.SubTotal);
+                    oObject.OrderDetails = orderDetails;
+                    oObject.UserId = user.UserId;
+                }
+
+                _db.SaveChanges();
+                var data = _db.Orders
+                             .Where(o => o.OrderId == oObject.OrderId && o.dlt == 0)
+                             .Select(p => new
+                             {
+                                 p.OrderId,
+                                 p.OrderDate,
+                                 p.TotalAmount,
+                                 p.User.FirstName,
+                                 p.User.LastName,
+                                 Details = p.OrderDetails.Select(d => new
+                                 {
+                                     d.OrderDetailId,
+                                     d.OrderId,
+                                     d.ProductId,
+                                     d.Quantity,
+                                     d.product.ProductName
+                                 })
+                             }).ToList();
+                return Ok(data);
             }
             catch (Exception ex)
             {
@@ -201,33 +195,30 @@ namespace webapifirst.Controllers
                 {
                     return NotFound();
                 }
-                using (var db = new FoodDeliveryContext())
+                var order = _db.Orders.Find(orderId);
+                if (order != null)
                 {
-                    var order = db.Orders.Find(orderId);
-                    if(order != null)
-                    {
-                        order.dlt = 1;
-                        order.OpEdit = "admin";
-                        order.PcEdit = Environment.MachineName;
-                        //order.DateEdit = DateTime.Now;
+                    order.dlt = 1;
+                    order.OpEdit = "admin";
+                    order.PcEdit = Environment.MachineName;
+                    //order.DateEdit = DateTime.Now;
 
-                        var orderDetails = db.OrderDetails.Where(p => p.OrderId == order.OrderId).ToList();
-                        if(orderDetails != null)
-                        {
-                            foreach(var d in orderDetails)
-                            {
-                                d.dlt = 1;
-                                d.OpEdit = "admin";
-                                d.PcEdit = Environment.MachineName;
-                            }
-                        }
-                        db.SaveChanges();
-                        return Ok(new {success = true, message = "successfully delete data"});
-                    }
-                    else
+                    var orderDetails = _db.OrderDetails.Where(p => p.OrderId == order.OrderId).ToList();
+                    if (orderDetails != null)
                     {
-                        return NotFound();
+                        foreach (var d in orderDetails)
+                        {
+                            d.dlt = 1;
+                            d.OpEdit = "admin";
+                            d.PcEdit = Environment.MachineName;
+                        }
                     }
+                    _db.SaveChanges();
+                    return Ok(new { success = true, message = "successfully delete data" });
+                }
+                else
+                {
+                    return NotFound();
                 }
             }
             catch (Exception ex)

@@ -35,27 +35,25 @@ namespace webapifirst.Helper
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        public static string GenerateRefreshToken(string userId)
+        public static string GenerateRefreshToken(string userId, FoodDeliveryContext db)
         {
             try
             {
                 if (string.IsNullOrEmpty(userId)) {
                     return "invalid";
                 }
-                using (var db = new FoodDeliveryContext())
+                var oObject = new RefreshToken()
                 {
-                    var oObject = new RefreshToken()
-                    {
-                        RefreshTokenId = Guid.NewGuid().ToString(),
-                        RefreshTokenSecret = Convert.ToBase64String(Guid.NewGuid().ToByteArray()),
-                        ExpiresAt = DateTime.UtcNow.AddDays(7),
-                        userId = userId
-                    };
-                    db.RefreshTokens.Add(oObject);
-                    db.SaveChanges();
-                    return oObject.RefreshTokenSecret;
-                }
-            }catch(Exception e)
+                    RefreshTokenId = Guid.NewGuid().ToString(),
+                    RefreshTokenSecret = Convert.ToBase64String(Guid.NewGuid().ToByteArray()),
+                    ExpiresAt = DateTime.UtcNow.AddDays(7),
+                    userId = userId
+                };
+                db.RefreshTokens.Add(oObject);
+                db.SaveChanges();
+                return oObject.RefreshTokenSecret;
+            }
+            catch(Exception e)
             {
                 return e.Message; 
             }

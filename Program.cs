@@ -1,6 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using webapifirst.Models;
+using webapifirst.Repository;
+using webapifirst.Service;
 namespace webapifirst
 {
     public class Program
@@ -35,6 +39,12 @@ namespace webapifirst
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey))
                 };
             });
+            builder.Services.AddDbContext<FoodDeliveryContext>(option =>
+            {
+                option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            builder.Services.AddScoped<IProductService, ProductService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

@@ -172,3 +172,6 @@ C:\Users\dedis\source\repos\webapifirst\webapifirst\bin\Debug\net8.0\runtimes\wi
 C:\Users\dedis\source\repos\webapifirst\webapifirst\obj\Debug\net8.0\webapifirst.sourcelink.json
 C:\Users\dedis\source\repos\webapifirst\webapifirst\bin\Debug\net8.0\BCrypt.Net-Next.dll
 C:\Users\dedis\source\repos\webapifirst\webapifirst\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\dedis\source\repos\webapifirst\webapifirst\bin\Debug\net8.0\Castle.Core.dll
+C:\Users\dedis\source\repos\webapifirst\webapifirst\bin\Debug\net8.0\Microsoft.EntityFrameworkCore.InMemory.dll
+C:\Users\dedis\source\repos\webapifirst\webapifirst\bin\Debug\net8.0\Moq.dll

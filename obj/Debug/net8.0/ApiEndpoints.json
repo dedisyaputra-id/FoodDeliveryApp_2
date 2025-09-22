@@ -266,6 +266,11 @@
         "Name": "CategoryId",
         "Type": "System.String",
         "IsRequired": false
+      },
+      {
+        "Name": "CategoryName",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []
