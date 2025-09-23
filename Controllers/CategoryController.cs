@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using webapifirst.Models;
+using webapifirst.Repository;
+using webapifirst.Service;
 
 namespace webapifirst.Controllers
 {
@@ -8,10 +10,10 @@ namespace webapifirst.Controllers
     [Route("api/[controller]/[action]")]
     public class CategoryController : ControllerBase
     {
-        private readonly FoodDeliveryContext _db;
-        public CategoryController(FoodDeliveryContext context) 
+        private readonly ICategoryService _service;
+        public CategoryController(ICategoryService categoryService) 
         { 
-            _db = context;
+            _service = categoryService;
         }
 
         [HttpGet]
@@ -19,7 +21,7 @@ namespace webapifirst.Controllers
         {
             try
             {
-                var category = _db.Categories.ToList().Where(c => c.dlt == 0);
+                var category = _service.Get();
                 return Ok(category);
             }
             catch (Exception ex)
@@ -34,7 +36,13 @@ namespace webapifirst.Controllers
         {
             try
             {
-                var category = _db.Categories.Find(id);
+                if (string.IsNullOrEmpty(id))
+                {
+                    return BadRequest();
+                }
+
+                var category = _service.GetById(id);
+
                 if (category != null)
                 {
                     return Ok(category);
@@ -60,32 +68,9 @@ namespace webapifirst.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                var oObject = new Category();
-                if (string.IsNullOrEmpty(Convert.ToString(model.CategoryId)))
-                {
-                    oObject.CategoryId = Convert.ToString(Guid.NewGuid());
-                    oObject.OpAdd = "Admin";
-                    oObject.PcAdd = Environment.MachineName;
-                    oObject.DateAdd = DateTime.Now;
-
-                    _db.Categories.Add(oObject);
-                }
-                else
-                {
-                    oObject = _db.Categories.Find(Convert.ToString(model.CategoryId));
-                    if (oObject != null)
-                    {
-                        oObject.OpEdit = "admin";
-                        oObject.PcEdit = Environment.MachineName;
-                        //oObject.DateEdit = DateTime.Now;
-                    }
-                }
-                if (oObject != null)
-                {
-                    oObject.Name = model.Name;
-                }
-                _db.SaveChanges();
-                return Ok(oObject);
+                _service.Add(model);
+                var categories = _service.Get();
+                return Ok(categories);
             }
             catch (Exception ex)
             {
@@ -103,20 +88,9 @@ namespace webapifirst.Controllers
                 {
                     return NotFound();
                 }
-                var oObject = _db.Categories.Find(categoryId);
-                if (oObject != null)
-                {
-                    oObject.dlt = 1;
-                    oObject.OpEdit = "admin";
-                    oObject.PcEdit = Environment.MachineName;
-                    //oObject.DateEdit = Convert.ToString(DateTime.Now);
-                    _db.SaveChanges();
-                    return Ok(oObject);
-                }
-                else
-                {
-                    return NoContent();
-                }
+                
+                var oObject = _service.UpdateDlt(categoryId);
+                return Ok(oObject);
             }
             catch (Exception ex)
             {
